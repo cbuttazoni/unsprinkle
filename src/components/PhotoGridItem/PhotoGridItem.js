@@ -5,7 +5,25 @@ const PhotoGridItem = ({ id, src, alt, tags }) => {
   return (
     <article>
       <Anchor href={`/photos/${id}`}>
-        <Image src={src} srcSet={src.replace('.jpg', '@2x.jpg')} alt={alt} />
+        <picture>
+          <source 
+            type="image/avif"
+            srcSet={`
+              ${src.replace('.jpg', '.avif')} 1x,
+              ${src.replace('.jpg', '@2x.avif')} 2x,
+              ${src.replace('.jpg', '@3x.avif')} 3x
+            `}
+          />
+          <source 
+            type="image/jpeg"
+            srcSet={`
+              ${src} 1x,
+              ${src.replace('.jpg', '@2x.jpg')} 2x,
+              ${src.replace('.jpg', '@3x.jpg')} 3x
+            `}
+          />
+          <Image src={src} alt={alt} />
+        </picture>
       </Anchor>
       <Tags>
         {tags.map((tag) => (
@@ -33,7 +51,10 @@ const Image = styled.img`
 `;
 
 const Tags = styled.ul`
-  display: revert;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 4px 0;
 `;
 
 const Tag = styled.li`
@@ -42,14 +63,11 @@ const Tag = styled.li`
   font-size: 0.875rem;
   font-weight: 475;
   color: var(--color-gray-800);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  width: fit-content;
-  max-width: 100%;
-  display: inline-block;
-  margin-right: 8px;
-  margin-bottom: 4px;
+  display: inline;
+  
+  &:not(:last-of-type) {
+    margin-right: 8px;
+  }
 `;
 
 export default PhotoGridItem;
